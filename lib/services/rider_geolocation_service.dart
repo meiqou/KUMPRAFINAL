@@ -48,7 +48,7 @@ class RiderGeolocationService {
   }
 
   static Future<void> _updateLocation(int batchId, double lat, double lng) async {
-    await ApiService.post('riders/location/update.php', {
+    await ApiService.post('config/update.php', {
       'batch_id': batchId,
       'latitude': lat,
       'longitude': lng,

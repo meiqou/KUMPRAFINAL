@@ -1,7 +1,7 @@
 <?php
 // kumpra/api/riders/batches/accept.php
-require_once __DIR__ . '/../../config/cors.php';
-require_once __DIR__ . '/../../config/database.php';
+require_once __DIR__ . '/../config/cors.php';
+require_once __DIR__ . '/../config/database.php';
 
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     respond(['success' => false, 'message' => 'Method not allowed'], 405);

@@ -66,7 +66,7 @@ Text('Rider Dashboard', style: GoogleFonts.poppins(fontSize: 40, fontWeight: Fon
               ),
               Center(
                 child: TextButton(
-                  onPressed: () => Navigator.pushReplacement(
+                  onPressed: () => Navigator.push(
                     context,
                     MaterialPageRoute(builder: (_) => const LoginScreen()),
                   ),

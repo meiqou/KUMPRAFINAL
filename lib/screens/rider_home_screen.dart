@@ -26,7 +26,7 @@ class _RiderHomeScreenState extends State<RiderHomeScreen> {
   Future<void> _fetchAvailableBatches({int? clusterId}) async {
     setState(() => _loading = true);
     final params = clusterId != null ? {'cluster_id': clusterId.toString()} : null;
-    final res = await ApiService.get('riders/batches/available.php', auth: true, params: params);
+    final res = await ApiService.get('batches/available.php', auth: true, params: params);
     if (mounted) {
       setState(() {
         _availableBatches = res['batches'] ?? [];
@@ -36,7 +36,7 @@ class _RiderHomeScreenState extends State<RiderHomeScreen> {
   }
 
   void _acceptBatch(int batchId) async {
-    final res = await ApiService.post('riders/batches/accept.php', {'batch_id': batchId}, auth: true);
+    final res = await ApiService.post('batches/accept.php', {'batch_id': batchId}, auth: true);
     if (!mounted) return;
     if (res['success'] == true) {
       ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Batch accepted!'), backgroundColor: AppColors.success));

@@ -94,7 +94,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   ),
                 const Divider(),
                 TextButton.icon(
-                  onPressed: () => Navigator.pushReplacement(
+                  onPressed: () => Navigator.push(
                     context,
                     MaterialPageRoute(builder: (_) => const RiderLoginScreen()),
                   ),

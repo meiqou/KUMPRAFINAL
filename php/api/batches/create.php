@@ -39,14 +39,15 @@ try {
 
     $stmt = $db->prepare(
         'SELECT batch_id FROM batches WHERE cluster_id = ? 
-         AND status IN (\'Gathering\', \'Last_Call\', \'Locked\') 
+         AND status IN (\'Gathering\', \'Last_Call\', \'Locked\')
+         AND current_count < size_limit
          AND DATE(created_at) = CURDATE() LIMIT 1'
     );
     $stmt->execute([$clusterId]);
     if ($stmt->fetch()) {
         respond([
             'success' => false,
-            'message' => 'A batch already exists in your barangay. Please wait until the rider departs before creating a new batch.',
+            'message' => 'A non-full active batch already exists in your barangay. Join it first. New batches are allowed once the current one is full.',
         ]);
     }
 
