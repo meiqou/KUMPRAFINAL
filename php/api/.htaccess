@@ -1,0 +1,20 @@
+# kumpra/api/.htaccess
+Options -Indexes
+Options -MultiViews
+
+RewriteEngine On
+
+<IfModule mod_headers.c>
+	Header always set Access-Control-Allow-Origin "*"
+	Header always set Access-Control-Allow-Headers "Content-Type, Authorization, X-Requested-With, Access-Control-Allow-Headers"
+	Header always set Access-Control-Allow-Methods "GET, POST, PUT, DELETE, OPTIONS"
+	Header always set Access-Control-Max-Age "86400"
+</IfModule>
+
+# Block direct access to config files
+RewriteRule ^config/ - [F,L]
+
+# Pretty URLs (optional)
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule ^(.*)$ index.php?path=$1 [QSA,L]
