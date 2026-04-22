@@ -1,7 +1,7 @@
 <?php
 // kumpra/api/riders/batches/available.php - Open batches for riders
-require_once __DIR__ . '/../../config/cors.php';
-require_once __DIR__ . '/../../config/database.php';
+require_once __DIR__ . '/../config/cors.php';
+require_once __DIR__ . '/../config/database.php';
 
 if ($_SERVER['REQUEST_METHOD'] !== 'GET') {
     respond(['success' => false, 'message' => 'Method not allowed'], 405);
@@ -10,23 +10,32 @@ if ($_SERVER['REQUEST_METHOD'] !== 'GET') {
 $riderId = validateToken(); // Rider JWT
 
 $db = getDB();
- $clusterId = (int)($_GET['cluster_id'] ?? 0);
-  // Optional: if no cluster_id, show all open batches
+$clusterId = (int)($_GET['cluster_id'] ?? 0);
+// Optional filter by cluster; if 0, show all open batches across clusters
 
-// Available: Gathering/Last_Call/Locked (no rider or In_Transit incomplete)
-$stmt = $db->prepare("
+// Available: Gathering/Last_Call/Locked (not yet assigned to a rider or already in progress)
+$sql = "
     SELECT 
         b.batch_id, b.status, b.current_count, b.size_limit, b.cluster_id,
         b.created_at, c.barangay_name, 
-        CASE WHEN b.rider_id = ? THEN 'assigned' ELSE 'open' END as rider_status
+        CASE WHEN b.rider_id IS NOT NULL THEN 'assigned' ELSE 'open' END as rider_status
     FROM batches b 
     JOIN clusters c ON b.cluster_id = c.cluster_id 
-    WHERE b.cluster_id = ? 
-      AND b.status NOT IN ('Completed', 'Cancelled', 'In_Progress')
+    WHERE b.status IN ('Gathering', 'Last_Call', 'Locked')
+      AND (b.rider_id IS NULL OR b.rider_id = 0)
       AND DATE(b.created_at) = CURDATE()
-    ORDER BY b.created_at DESC
-");
-$stmt->execute([$riderId, $clusterId]);
+";
+$params = [];
+
+if ($clusterId > 0) {
+    $sql .= " AND b.cluster_id = ? ";
+    $params[] = $clusterId;
+}
+
+$sql .= " ORDER BY b.created_at DESC";
+
+$stmt = $db->prepare($sql);
+$stmt->execute($params);
 $batches = $stmt->fetchAll();
 
   $formatted = array_map(function($b) {

@@ -66,7 +66,7 @@ _buildInput(_identifierController, 'USERNAME, PLATE, OR PHONE NUMBER', Icons.per
               ),
               Center(
                 child: TextButton(
-                  onPressed: () => Navigator.pushReplacement(
+                  onPressed: () => Navigator.push(
                     context,
                     MaterialPageRoute(builder: (_) => const LoginScreen()),
                   ),

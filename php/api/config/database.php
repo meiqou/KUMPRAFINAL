@@ -109,7 +109,7 @@ function getRidersIdColumn(PDO $db): string {
     $columnName = $stmt->fetchColumn();
 
     if (!$columnName) {
-        $columnName = \'rider_id\';
+        $columnName = 'rider_id';
     }
 
     return $columnName;
@@ -121,22 +121,22 @@ function getRidersPasswordColumn(PDO $db): string {
         return $columnName;
     }
 
-    if (hasTableColumn($db, \'riders\', \'password\')) {
-        $columnName = \'password\';
+    if (hasTableColumn($db, 'riders', 'password')) {
+        $columnName = 'password';
         return $columnName;
     }
 
-    if (hasTableColumn($db, \'riders\', \'password_hash\')) {
-        $columnName = \'password_hash\';
+    if (hasTableColumn($db, 'riders', 'password_hash')) {
+        $columnName = 'password_hash';
         return $columnName;
     }
 
     try {
-        $db->exec("ALTER TABLE riders ADD COLUMN password VARCHAR(255) NOT NULL DEFAULT \'\' AFTER work_shift");
-        $columnName = \'password\';
+        $db->exec("ALTER TABLE riders ADD COLUMN password VARCHAR(255) NOT NULL DEFAULT '' AFTER work_shift");
+        $columnName = 'password';
     } catch (PDOException $e) {
-        error_log(\'Unable to add password column to riders table: \' . $e->getMessage());
-        $columnName = \'password\';
+        error_log('Unable to add password column to riders table: ' . $e->getMessage());
+        $columnName = 'password';
     }
 
     return $columnName;
@@ -148,22 +148,22 @@ function getUsersPasswordColumn(PDO $db): string {
         return $columnName;
     }
 
-    if (hasTableColumn($db, \'users\', \'password\')) {
-        $columnName = \'password\';
+    if (hasTableColumn($db, 'users', 'password')) {
+        $columnName = 'password';
         return $columnName;
     }
 
-    if (hasTableColumn($db, \'users\', \'password_hash\')) {
-        $columnName = \'password_hash\';
+    if (hasTableColumn($db, 'users', 'password_hash')) {
+        $columnName = 'password_hash';
         return $columnName;
     }
 
     try {
-        $db->exec("ALTER TABLE users ADD COLUMN password VARCHAR(255) NOT NULL DEFAULT \'\' AFTER username");
-        $columnName = \'password\';
+        $db->exec("ALTER TABLE users ADD COLUMN password VARCHAR(255) NOT NULL DEFAULT '' AFTER username");
+        $columnName = 'password';
     } catch (PDOException $e) {
-        error_log(\'Unable to add password column to users table: \' . $e->getMessage());
-        $columnName = \'password\';
+        error_log('Unable to add password column to users table: ' . $e->getMessage());
+        $columnName = 'password';
     }
 
     return $columnName;
