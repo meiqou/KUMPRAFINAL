@@ -6,6 +6,7 @@ import '../services/api_service.dart';
 class RiderGeolocationService {
   static Timer? _timer;
   static int _activeBatchId = 0;
+  static Position? _lastPosition;
   static final StreamController<Position> _positionController = StreamController<Position>.broadcast();
 
   static Stream<Position> get positionStream => _positionController.stream;
@@ -31,6 +32,7 @@ class RiderGeolocationService {
 
     // Get initial position
     Position position = await Geolocator.getCurrentPosition();
+    _lastPosition = position;
     _positionController.add(position);
     await _updateLocation(batchId, position.latitude, position.longitude);
 
@@ -39,6 +41,7 @@ class RiderGeolocationService {
       try {
         // ignore: deprecated_member_use
         Position pos = await Geolocator.getCurrentPosition(desiredAccuracy: LocationAccuracy.high);
+        _lastPosition = pos;
         _positionController.add(pos);
         await _updateLocation(batchId, pos.latitude, pos.longitude);
       } catch (e) {
@@ -63,5 +66,17 @@ class RiderGeolocationService {
   }
 
   static int get activeBatchId => _activeBatchId;
+
+  /// Get the last known GPS position or fetch new one
+  static Position? get lastKnownPosition => _lastPosition;
+
+  /// Get current position (cached or fresh)
+  static Future<Position> getCurrentPosition() async {
+    if (_lastPosition != null) return _lastPosition!;
+    // ignore: deprecated_member_use
+    Position pos = await Geolocator.getCurrentPosition(desiredAccuracy: LocationAccuracy.high);
+    _lastPosition = pos;
+    return pos;
+  }
 }
 

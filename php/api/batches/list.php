@@ -34,10 +34,12 @@ $stmt = $db->prepare('
         c.longitude,
         c.barangay_name,
         c.street_zone,
+        r.name as rider_name,
         CASE WHEN o.order_id IS NOT NULL THEN 1 ELSE 0 END AS user_joined
     FROM batches b
     JOIN clusters c ON b.cluster_id = c.cluster_id
     LEFT JOIN orders o ON o.batch_id = b.batch_id AND o.user_id = ?
+    LEFT JOIN riders r ON b.rider_id = r.rider_id
     WHERE b.cluster_id = ?
       AND DATE(b.created_at) = CURDATE()
       AND b.status NOT IN ("Completed", "Cancelled")

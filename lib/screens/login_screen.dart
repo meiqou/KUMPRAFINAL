@@ -4,6 +4,7 @@ import '../utils/constants.dart';
 import '../services/auth_service.dart';
 import 'home_screen.dart';
 import 'register_screen.dart';
+import 'rider_login_screen.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -189,19 +190,17 @@ class _LoginScreenState extends State<LoginScreen> {
                       ],
                     ),
                   ),
-<<<<<<< HEAD
-=======
-                const Divider(),
-                TextButton.icon(
-                  onPressed: () => Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (_) => const RiderLoginScreen()),
-                  ),
-                  icon: const Icon(Icons.motorcycle, size: 20),
-                  label: Text('LOG IN AS RIDER',
-                      style: GoogleFonts.poppins(color: AppColors.textSecondary, fontWeight: FontWeight.w700, fontSize: 13)),
->>>>>>> 7427387f5ce303f169b32bc5b309615d7b40f269
                 ),
+              ),
+              const Divider(),
+              TextButton.icon(
+                onPressed: () => Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (_) => const RiderLoginScreen()),
+                ),
+                icon: const Icon(Icons.motorcycle, size: 20),
+                label: Text('LOG IN AS RIDER',
+                    style: GoogleFonts.poppins(color: AppColors.textSecondary, fontWeight: FontWeight.w700, fontSize: 13)),
               ),
             ],
           ),

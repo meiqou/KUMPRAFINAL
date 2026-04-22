@@ -18,8 +18,14 @@ if ($batchId <= 0) {
 $db = getDB();
 $riderIdColumn = getRidersIdColumn($db);
 
-// Lock batch
-$stmt = $db->prepare('SELECT batch_id, status, rider_id FROM batches WHERE batch_id = ? FOR UPDATE');
+// Lock batch and get destination coordinates for routing
+$stmt = $db->prepare('
+    SELECT b.batch_id, b.status, b.rider_id, c.latitude, c.longitude, c.barangay_name 
+    FROM batches b
+    JOIN clusters c ON b.cluster_id = c.cluster_id
+    WHERE b.batch_id = ? 
+    FOR UPDATE
+');
 $stmt->execute([$batchId]);
 $batch = $stmt->fetch();
 
@@ -43,11 +49,15 @@ try {
     respond([
         'success' => true, 
         'message' => 'Batch accepted! Status: In_Progress',
-        'batch_id' => $batchId
+        'batch_id' => $batchId,
+        'destination' => [
+            'name' => $batch['barangay_name'],
+            'lat'  => (float)$batch['latitude'],
+            'lng'  => (float)$batch['longitude']
+        ]
     ]);
 } catch (Exception $e) {
     $db->rollBack();
     respond(['success' => false, 'message' => 'Failed to accept batch'], 500);
 }
 ?>
-

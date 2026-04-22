@@ -22,7 +22,7 @@ $userIdColumn = getUsersIdColumn($db);
 
 // Verify batch is valid and user's cluster matches
 $stmt = $db->prepare('
-    SELECT b.batch_id, b.status, b.cluster_id, b.load_capacity_kg, b.total_weight
+    SELECT b.batch_id, b.status, b.cluster_id, b.load_capacity_kg, b.total_weight, b.current_count, b.size_limit
     FROM batches b
     JOIN users u ON u.cluster_id = b.cluster_id
     WHERE b.batch_id = ? AND u.' . $userIdColumn . ' = ?
@@ -59,6 +59,16 @@ try {
         ');
         $stmt->execute([$userId, $batchId, $estimatedTotal]);
         $orderId = (int)$db->lastInsertId();
+        
+        // Increment batch member count only for brand new orders
+        $newCount = (int)$batch['current_count'] + 1;
+        $newStatus = $batch['status'];
+        
+        // If we reached the threshold (e.g. 3) or it's full, potentially update status
+        if ($newCount >= 3 && $newStatus === 'Gathering') {
+            $newStatus = 'Locked';
+        }
+        $db->prepare('UPDATE batches SET current_count = ?, status = ? WHERE batch_id = ?')->execute([$newCount, $newStatus, $batchId]);
     }
 
     // Insert items

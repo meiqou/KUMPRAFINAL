@@ -17,7 +17,7 @@ $clusterId = (int)($_GET['cluster_id'] ?? 0);
 $sql = "
     SELECT 
         b.batch_id, b.status, b.current_count, b.size_limit, b.cluster_id,
-        b.created_at, c.barangay_name, 
+        b.created_at, c.barangay_name, c.latitude, c.longitude,
         CASE WHEN b.rider_id IS NOT NULL THEN 'assigned' ELSE 'open' END as rider_status
     FROM batches b 
     JOIN clusters c ON b.cluster_id = c.cluster_id 
@@ -38,12 +38,14 @@ $stmt = $db->prepare($sql);
 $stmt->execute($params);
 $batches = $stmt->fetchAll();
 
-  $formatted = array_map(function($b) {
+    $formatted = array_map(function($b) {
     $fee = $b['current_count'] > 0 ? 300 / max($b['current_count'], 1) : 300;
     return [
         'batch_id' => (int)$b['batch_id'],
         'name' => strtoupper($b['barangay_name']) . '-' . $b['batch_id'],
         'cluster_name' => $b['barangay_name'],
+        'latitude' => !empty($b['latitude']) && (float)$b['latitude'] != 0 ? (float)$b['latitude'] : null,
+        'longitude' => !empty($b['longitude']) && (float)$b['longitude'] != 0 ? (float)$b['longitude'] : null,
         'status' => $b['status'],
         'joined' => (int)$b['current_count'],
         'size_limit' => (int)$b['size_limit'],
