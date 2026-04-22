@@ -46,7 +46,7 @@ class _RiderLoginScreenState extends State<RiderLoginScreen> {
             children: [
 Text('Rider Dashboard', style: GoogleFonts.poppins(fontSize: 40, fontWeight: FontWeight.w900, color: AppColors.primary)),
               const SizedBox(height: 40),
-              _buildInput(_identifierController, 'ACCOUNT NUMBER OR USERNAME', Icons.person_outline),
+_buildInput(_identifierController, 'USERNAME, PLATE, OR PHONE NUMBER', Icons.person_outline),
               const SizedBox(height: 16),
               _buildInput(_passwordController, 'PASSWORD', Icons.lock_outline, obscure: true),
               const SizedBox(height: 32),
